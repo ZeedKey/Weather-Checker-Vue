@@ -2,68 +2,67 @@
   <main>
     <section class="main__display">
       <h4>the.weather</h4>
+
       <city-weather-list :geolocation="city_weather" />
     </section>
+
     <section class="main__panel">
       <left-arrow-icon />
+
       <div class="panel__inner">
         <city-input @on-input="onCitySearch" />
-        <search-city-list @on-click="onClick" :search_cities="city_search"/>
-
+        <search-city-list
+          :search_cities="search_city_list"
+          @on-click="onCityClick"
+        />
         <separator />
-        <h2>Weather details</h2>
+        <h3>Weather details</h3>
         <city-weather-details-list :geolocation="city_weather" />
         <separator />
+
+        <h3>Recently viewed</h3>
+        <viewied-city-list
+          :viewed_cities="viewed_city_list"
+          :geolocation="city_weather"
+          @on-item-click="onViewedCityClick"
+        />
       </div>
     </section>
   </main>
 </template>
 
 <script lang="ts">
-import axios from "axios";
-import type { WeatherResponseType } from "./types/weather.response";
-import type { CityType } from "./types/city.type";
+import { getCityWeather, searchCityWeather } from "./api/weather/weather.query";
+import { getLocation } from "./api/location/location.query";
 import "@/assets/base.css";
+
 export default {
   data() {
     return {
-      city: {} as CityType,
+      user_city: "",
       city_weather: {},
-      city_search: [],
-      position: {},
-      geo_api_url: import.meta.env.VITE_APP_GEO_API_URL,
-      geo_api_key: import.meta.env.VITE_APP_GEO_API_KEY,
-      weather_api_url: import.meta.env.VITE_APP_WEATHER_API_URL,
-      weather_api_key: import.meta.env.VITE_APP_WEATHER_API_KEY,
+      viewed_city_list: [] as string[],
+      search_city_list: [],
     };
   },
 
   methods: {
-    async onCitySearch(value: string) {
-      const weather_response = await axios.get(
-        `${this.weather_api_url}search.json?key=${this.weather_api_key}&q=${value}`
-      );
-      this.city_search=weather_response.data;
+    async onCitySearch(city: string) {
+      this.search_city_list = (await searchCityWeather(city)).data;
     },
-    async onClick(value: string) {
-      const weather_response = await axios.get(
-        `${this.weather_api_url}current.json?key=${this.weather_api_key}&q=${value}`
-      );
-      this.city_weather = weather_response.data;
+    async onCityClick(city: string) {
+      this.city_weather = (await getCityWeather(city)).data;
+      this.viewed_city_list.push(city);
     },
-
+    async onViewedCityClick(value: string) {
+      console.log(value);
+    },
 
     async onGeoSuccess(pos: GeolocationPosition) {
-      const location_response = await axios.get(
-        `${this.geo_api_url}${pos.coords?.latitude},${pos.coords?.longitude}.json?key=${this.geo_api_key}&language=EN`
-      );
-      this.city = location_response.data.addresses[0].address;
-
-      const weather_response = await axios.get<WeatherResponseType>(
-        `${this.weather_api_url}current.json?key=${this.weather_api_key}&q=${this.city?.localName}`
-      );
-
-      this.city_weather = weather_response.data;
+      this.user_city = (
+        await getLocation(pos)
+      ).data.addresses[0].address.localName;
+      this.city_weather = (await getCityWeather(this.user_city)).data;
     },
     onGeoFailed() {
       console.log("BAD!");
@@ -85,7 +84,7 @@ body {
 }
 main {
   display: grid;
-  grid-template-columns: 75% 25%;
+  grid-template-columns: 9fr 3fr;
   margin: 0;
   height: 100%;
 }

@@ -23,11 +23,16 @@ export type Address = {
 }
 
 export type Location = {
-    addresses: Address
+    address: Address
     position: string
 }
 
 export type LocationResponseType = {
-    addresses: [Location]
-    position: string
+    addresses: Location[]
+    summary: Summary
+}
+
+export type Summary = {
+    queryTime: number
+    numResults: number
 }

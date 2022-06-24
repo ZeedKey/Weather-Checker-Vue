@@ -4,7 +4,7 @@
     <p class="weather__city">{{ geolocation.location.name }}</p>
     <p class="weather__date">{{ date }}</p>
     <div class="weather__icon">
-      <img :src="geolocation.current.condition.icon"/>
+      <img :src="geolocation.current.condition.icon" />
       <p>{{ geolocation.current.condition.text }}</p>
     </div>
   </div>

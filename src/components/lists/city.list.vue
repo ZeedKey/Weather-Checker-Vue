@@ -1,13 +1,14 @@
 <template>
-  <div class="list">
-    <div
+  <div class="list" :style="isVisible">
+    <select-city-button
       class="list__item"
       v-for="city in this.search_cities"
       :key="city.name"
-      @click="onClick"
+      :city_name="city.name"
+      @on-click="onClick"
     >
       {{ city.name }}
-    </div>
+    </select-city-button>
   </div>
 </template>
 
@@ -20,7 +21,15 @@ export default {
   },
 
   created() {
-    this.onClick = (event) => this.$emit('on-click', event.target.innerHTML);
+    this.onClick = (city) => this.$emit("on-click", city);
+  },
+
+  computed: {
+    isVisible() {
+      return this.search_cities.length > 1
+        ? "max-height: 8rem"
+        : "max-height: 0rem";
+    },
   },
 };
 </script>
@@ -32,7 +41,12 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 2em;
-  max-height: 10rem;
+  max-height: 6em;
   overflow: scroll;
+  overflow-x: hidden;
+}
+
+.list__item {
+  cursor: pointer;
 }
 </style>

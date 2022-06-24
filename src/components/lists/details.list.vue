@@ -1,33 +1,33 @@
 <template>
   <div class="list">
     <div class="list__row">
-      <p class="list__item">Cloudy</p>
-      <p class="list__item">{{geolocation.current.cloud}}%</p>
+      <p>Cloudy</p>
+      <p>{{ geolocation.current.cloud }}%</p>
     </div>
 
     <div class="list__row">
-      <p class="list__item">Humidity</p>
-      <p class="list__item">{{geolocation.current.humidity}}%</p>
+      <p>Humidity</p>
+      <p>{{ geolocation.current.humidity }}%</p>
     </div>
 
     <div class="list__row">
-      <p class="list__item">Wind</p>
-      <p class="list__item">{{geolocation.current.wind_mph}} mp/h</p>
+      <p>Wind</p>
+      <p>{{ geolocation.current.wind_mph }} mp/h</p>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import type { WeatherResponseType } from '@/types/weather.response';
-import type { PropType } from 'vue';
+import type { WeatherResponseType } from "@/types/weather.response";
+import type { PropType } from "vue";
 export default {
   name: "city-weather-details-list",
   props: {
     geolocation: {
       type: Object as PropType<WeatherResponseType>,
       required: true,
-    }
-  }
+    },
+  },
 };
 </script>
 
