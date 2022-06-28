@@ -1,5 +1,6 @@
 <template>
-  <main>
+  <particles-background />
+  <main v-if="city_weather">
     <section class="main__display">
       <h4>the.weather</h4>
 
@@ -29,6 +30,9 @@
       </div>
     </section>
   </main>
+  <transition>
+    <loading-indicator v-if="!city_weather" />
+  </transition>
 </template>
 
 <script lang="ts">
@@ -40,7 +44,7 @@ export default {
   data() {
     return {
       user_city: "",
-      city_weather: {},
+      city_weather: undefined,
       viewed_city_list: [] as string[],
       search_city_list: [],
     };
@@ -48,15 +52,14 @@ export default {
 
   methods: {
     async onCitySearch(city: string) {
-      this.search_city_list = (await searchCityWeather(city)).data;
+      this.search_city_list =
+        city.length > 1 ? (await searchCityWeather(city)).data : [];
     },
     async onCityClick(city: string) {
       this.city_weather = (await getCityWeather(city)).data;
       this.viewed_city_list.push(city);
     },
-    async onViewedCityClick(value: string) {
-      console.log(value);
-    },
+    async onViewedCityClick(value: string) {},
 
     async onGeoSuccess(pos: GeolocationPosition) {
       this.user_city = (
@@ -79,12 +82,9 @@ export default {
 </script>
 
 <style>
-body {
-  background-image: url(https://images.hdqwalls.com/download/thunder-storm-4k-r8-1920x1080.jpg);
-}
 main {
   display: grid;
-  grid-template-columns: 9fr 3fr;
+  grid-template-columns: auto 400px;
   margin: 0;
   height: 100%;
 }
@@ -95,7 +95,7 @@ main {
   flex-direction: column;
   justify-content: space-between;
   color: white;
-  max-width: 600px;
+  max-width: 10px;
 }
 .main__panel {
   transition: 1s all;
@@ -113,5 +113,15 @@ main {
   color: white;
   backdrop-filter: blur(10px);
   background: rgba(50, 50, 50, 0.4);
+}
+
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
 }
 </style>

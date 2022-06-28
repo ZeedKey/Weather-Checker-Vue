@@ -28,9 +28,11 @@ export default {
 
 <style scoped>
 .list {
+  display: flex;
+  flex-direction: column-reverse;
   height: max-content;
   overflow: unset;
   overflow-x: hidden;
-  height: 17rem;
+  max-height: 17rem;
 }
 </style>
