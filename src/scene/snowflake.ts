@@ -1,6 +1,5 @@
 import { Particle } from "./particle";
-
-export class Raindrop extends Particle {
+export class Snowflake extends Particle {
   radius: number;
 
   constructor(public context: CanvasRenderingContext2D) {
@@ -9,6 +8,7 @@ export class Raindrop extends Particle {
   }
 
   paint() {
+    this.context.fillStyle = "#FFFFFF";
     if (this.weight < 0.33) {
       this.context.lineWidth = 0.8;
       this.radius = 2;
@@ -21,21 +21,9 @@ export class Raindrop extends Particle {
       this.context.lineWidth = 1.5;
       this.radius = 4;
     }
-
-    this.context.fillStyle = "#8CDFE8";
-    this.context?.beginPath();
-    this.context?.arc(this.x, this.y, this.radius, 0, Math.PI);
+    this.context.beginPath();
+    this.context?.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
     this.context?.fill();
-
-    this.context?.bezierCurveTo(
-      this.x,
-      this.y - 20,
-      this.x,
-      this.y - 20,
-      this.x + this.radius,
-      this.y
-    );
-    this.context?.fill();
-    this.context?.closePath();
+    this.context.closePath();
   }
 }

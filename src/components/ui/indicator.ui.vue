@@ -41,11 +41,6 @@
 <script>
 export default {
   name: "loading-indicator",
-  methods: {
-    onMounted() {
-      console.log("deleteing");
-    },
-  },
 };
 </script>
 

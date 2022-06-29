@@ -1,5 +1,5 @@
 <template>
-  <particles-background />
+  <particles-background :geolocation="city_weather" />
   <main v-if="city_weather">
     <section class="main__display">
       <h4>the.weather</h4>
@@ -25,14 +25,12 @@
         <viewied-city-list
           :viewed_cities="viewed_city_list"
           :geolocation="city_weather"
-          @on-item-click="onViewedCityClick"
+          @on-item-click="onCityClick"
         />
       </div>
     </section>
   </main>
-  <transition>
-    <loading-indicator v-if="!city_weather" />
-  </transition>
+  <loading-indicator v-if="!city_weather" />
 </template>
 
 <script lang="ts">
@@ -59,23 +57,19 @@ export default {
       this.city_weather = (await getCityWeather(city)).data;
       this.viewed_city_list.push(city);
     },
-    async onViewedCityClick(value: string) {},
 
+    // eslint-disable-next-line no-undef
     async onGeoSuccess(pos: GeolocationPosition) {
       this.user_city = (
         await getLocation(pos)
       ).data.addresses[0].address.localName;
       this.city_weather = (await getCityWeather(this.user_city)).data;
     },
-    onGeoFailed() {
-      console.log("BAD!");
-    },
   },
 
-  async created() {
-    navigator.geolocation.getCurrentPosition(
-      this.onGeoSuccess,
-      this.onGeoFailed
+  created() {
+    navigator.geolocation.getCurrentPosition(this.onGeoSuccess, () =>
+      console.log("bad")
     );
   },
 };
@@ -101,6 +95,7 @@ main {
   transition: 1s all;
   display: flex;
   align-items: center;
+  height: 100vh;
   transform: translateX(calc(100% - 30px));
 }
 .main__panel:hover {
@@ -113,15 +108,5 @@ main {
   color: white;
   backdrop-filter: blur(10px);
   background: rgba(50, 50, 50, 0.4);
-}
-
-.v-enter-active,
-.v-leave-active {
-  transition: opacity 0.5s ease;
-}
-
-.v-enter-from,
-.v-leave-to {
-  opacity: 0;
 }
 </style>

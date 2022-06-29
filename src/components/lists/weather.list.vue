@@ -21,6 +21,11 @@ export default {
       date: formatDate(this.geolocation.location.localtime),
     };
   },
+  watch: {
+    geolocation(newGeo: WeatherResponseType) {
+      this.date = formatDate(newGeo.location.localtime);
+    },
+  },
   props: {
     geolocation: {
       type: Object as PropType<WeatherResponseType>,
