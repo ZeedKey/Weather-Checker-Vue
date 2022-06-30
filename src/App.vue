@@ -1,118 +1,69 @@
-<template>
-  <particles-background :geolocation="city_weather" />
-  <main v-if="city_weather">
-    <section class="main__display">
-      <h4>the.weather</h4>
-
-      <city-weather-list :geolocation="city_weather" />
-    </section>
-
-    <section class="main__panel">
-      <left-arrow-icon />
-
-      <div class="panel__inner">
-        <city-input @on-input="onCitySearch" />
-        <search-city-list
-          :search_cities="search_city_list"
-          @on-click="onCityClick"
-        />
-        <separator />
-        <h3>Weather details</h3>
-        <city-weather-details-list :geolocation="city_weather" />
-        <separator />
-
-        <h3>Recently viewed</h3>
-        <viewied-city-list
-          :viewed_cities="viewed_city_list"
-          :geolocation="city_weather"
-          @on-item-click="onCityClick"
-        />
-      </div>
-    </section>
-  </main>
-  <loading-indicator v-if="!city_weather" />
-</template>
-
 <script lang="ts">
-import { getCityWeather, searchCityWeather } from "./api/weather/weather.query";
+import { getCityWeather } from "./api/weather/weather.query";
 import { getLocation } from "./api/location/location.query";
+import { useStore } from "./store";
+import { computed } from "vue";
 import "@/assets/base.css";
 
 export default {
-  data() {
+  setup() {
+    const store = useStore();
+
     return {
-      user_city: "",
-      city_weather: undefined,
-      viewed_city_list: JSON.parse(
-        window.localStorage.getItem("last-5-cities")
-      ),
-      search_city_list: [] as string[],
+      store: computed(() => store),
+      weather: computed(() => store?.weather?.current),
+      error: computed(() => store?.request_error),
     };
   },
 
-  methods: {
-    async onCitySearch(city: string) {
-      this.search_city_list =
-        city.length > 1 ? (await searchCityWeather(city)).data : [];
-    },
-    async onCityClick(city: string) {
-      this.city_weather = (await getCityWeather(city)).data;
-      this.viewed_city_list.push(city);
-      window.localStorage.setItem(
-        "last-5-cities",
-        JSON.stringify(this.viewed_city_list)
-      );
-    },
-
-    async onGeoSuccess(pos: GeolocationPosition) {
-      console.log(window.localStorage.getItem("last-5-cities"));
-      this.user_city = (
-        await getLocation(pos)
-      ).data.addresses[0].address.localName;
-      this.city_weather = (await getCityWeather(this.user_city)).data;
-    },
-  },
-
   created() {
-    navigator.geolocation.getCurrentPosition(this.onGeoSuccess, () =>
-      console.log("bad")
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        getLocation(pos)
+          .then((data) => {
+            this.store.setLocation(data.data);
+            return data.data.addresses[0].address.localName;
+          })
+          .then((city_name) => {
+            getCityWeather(city_name).then((data) =>
+              this.store.setWeather(data.data)
+            );
+          });
+      },
+      (error) => {
+        getCityWeather("London").then((data) =>
+          this.store.setWeather(data.data)
+        );
+      }
     );
   },
 };
 </script>
 
-<style>
+<template>
+  <particles-background />
+  <main v-if="weather">
+    <the-display />
+    <the-panel />
+  </main>
+  <loading-indicator v-if="!weather && !error" />
+  <error-alert v-if="error" />
+</template>
+
+<style scoped>
+@media screen and (max-width: 1200px) {
+  main {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    height: 100%;
+  }
+}
+
 main {
   display: grid;
   grid-template-columns: auto 400px;
   margin: 0;
   height: 100%;
-}
-
-.main__display {
-  padding: 3em;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  color: white;
-  max-width: 10px;
-}
-.main__panel {
-  transition: 1s all;
-  display: flex;
-  align-items: center;
-  height: 100vh;
-  transform: translateX(calc(100% - 30px));
-}
-.main__panel:hover {
-  transform: translateX(0);
-}
-.panel__inner {
-  height: 100%;
-  width: 100%;
-  padding: 2em;
-  color: white;
-  backdrop-filter: blur(10px);
-  background: rgba(50, 50, 50, 0.4);
 }
 </style>

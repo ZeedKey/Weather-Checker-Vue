@@ -2,18 +2,14 @@
   <input @input="onInput" />
 </template>
 
-<script>
-import { debounce } from "../../utils/debounce";
+<script lang="ts">
+import { debounce } from "@/utils/debounce";
 export default {
   name: "city-input",
 
-  props: {
-    delay: Number,
-  },
-
   created() {
     this.onInput = debounce((event) => {
-      this.$emit("on-input", event.target.value);
+      this.$emit("on-input", (event.target as HTMLInputElement).value);
     }, 500);
   },
 };

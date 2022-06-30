@@ -7,7 +7,7 @@ export class Scene {
   limit: number;
   intervalId?: number;
   particles: ParticlesArrType;
-  context: CanvasRenderingContext2D;
+  context: CanvasRenderingContext2D | null;
   static instance: Scene | null;
 
   constructor(public canvas_ref: HTMLCanvasElement, public condition: string) {
@@ -18,9 +18,8 @@ export class Scene {
   }
 
   init(condition = this.condition) {
-    this.context.restore();
+    this.context?.restore();
     this.stopParticles();
-    console.log(condition)
     switch (condition) {
       case "rain":
         this.spawn(Raindrop);
@@ -65,8 +64,8 @@ export class Scene {
   }
 
   clean() {
-    this.context.restore();
-    this.context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    this.context?.restore();
+    this.context?.clearRect(0, 0, window.innerWidth, window.innerHeight);
     this.canvas_ref.height = window.innerHeight;
     this.canvas_ref.width = window.innerWidth;
   }

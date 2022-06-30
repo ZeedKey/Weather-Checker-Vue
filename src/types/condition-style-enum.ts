@@ -1,4 +1,4 @@
-import type { Condition } from '@/types/condition.enum';
+import type { Condition } from '@/types/condition-enum';
 
 export const conditionStyle: Record<Condition, string> = {
     "rain" : "canvas_rainy_theme",

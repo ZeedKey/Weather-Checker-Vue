@@ -3,7 +3,7 @@ export class Particle {
     x: number;
     weight: number;
     
-    constructor(public context: CanvasRenderingContext2D) {
+    constructor(public context: CanvasRenderingContext2D | null) {
       this.y = 0;
       this.x = window.innerWidth - Math.random() * window.innerWidth;
       this.move = this.move.bind(this);
@@ -13,6 +13,7 @@ export class Particle {
     move() {
         if (this.y >= window.innerHeight) {
           this.y = 0;
+          this.weight = Math.random();
           this.x = window.innerWidth - Math.random() * window.innerWidth;
         } else {
           if (this.weight < 0.33) {

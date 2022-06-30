@@ -1,42 +1,45 @@
 <template>
-  <canvas ref="canvas" class="canvas_default" :class="[canvas_css]" />
+  <canvas ref="canvas" class="canvas_default" :class="[condition_style]" />
 </template>
 
 <script lang="ts">
 import { Scene } from "@/scene/index";
-import type { WeatherResponseType } from "@/types/weather.response";
-import type { PropType } from "vue";
-import { resolveCondition } from "@/utils/resolveCondition";
+import { resolveCondition } from "@/utils/resolve-condition";
+import { useStore } from "@/store";
+import { computed } from "vue";
+import { storeToRefs } from "pinia";
 
 export default {
   name: "particles-background",
-  props: {
-    geolocation: {
-      required: true,
-      type: Object as PropType<WeatherResponseType>,
-    },
-  },
-  data() {
+  setup() {
+    const { weather } = storeToRefs(useStore());
     return {
-      canvas_css: "",
+      condition: computed(
+        () =>
+          resolveCondition(weather?.value?.current?.condition?.text, "value") ??
+          ""
+      ),
+      condition_style: computed(
+        () =>
+          resolveCondition(weather?.value?.current?.condition?.text, "style") ??
+          ""
+      ),
     };
   },
-  watch: {
-    geolocation(newGeo: WeatherResponseType) {
-      if (newGeo) {
-        const conditionStyle =
-          resolveCondition(newGeo.current.condition.text, "style") ?? "";
-        const conditionValue =
-          resolveCondition(newGeo.current.condition.text, "value") ?? "";
-        const canvas = Scene.getInstance(
-          this.$refs.canvas as HTMLCanvasElement,
-          conditionValue
-        );
 
-        this.canvas_css = conditionStyle;
-        canvas.init(conditionValue);
-      }
-    },
+  mounted() {
+    const canvas = Scene.getInstance(
+      this.$refs.canvas as HTMLCanvasElement,
+      this.condition
+    );
+    canvas.init(this.condition);
+  },
+  updated() {
+    const canvas = Scene.getInstance(
+      this.$refs.canvas as HTMLCanvasElement,
+      this.condition
+    );
+    canvas.init(this.condition);
   },
 };
 </script>

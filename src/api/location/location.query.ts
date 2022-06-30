@@ -1,4 +1,4 @@
-import type { LocationResponseType } from "@/types/location.response";
+import type { LocationResponseType } from "@/types/location-response";
 import { location_api } from "./location.instance";
 
 export const getLocation = async (position: GeolocationPosition) =>

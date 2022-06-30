@@ -18,3 +18,21 @@ body,html {
 #app {
   height: 100%;
 }
+
+hr {
+  margin: 2em 0;
+  border: 0.5px solid rgba(255, 255, 255, 0.25);
+}
+
+* ::-webkit-scrollbar {
+  width: 8px;               /* width of the entire scrollbar */
+}
+
+* ::-webkit-scrollbar-track {
+  background: transparent;        /* color of the tracking area */
+}
+
+* ::-webkit-scrollbar-thumb {
+  background-color: white;    /* color of the scroll thumb */
+  border-radius: 12px;
+}

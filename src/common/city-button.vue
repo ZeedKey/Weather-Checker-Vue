@@ -4,9 +4,9 @@
   </button>
 </template>
 
-<script>
+<script lang="ts">
 export default {
-  name: "select-city-button",
+  name: "city-button",
 
   props: {
     city_name: {
