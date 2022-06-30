@@ -4,32 +4,30 @@ import { Raindrop } from "./raindrop";
 import { Snowflake } from "./snowflake";
 
 export class Scene {
-  static instance: Scene | null;
-  intervalId: number;
-  context: CanvasRenderingContext2D;
   limit: number;
-  raindrops: Raindrop[];
-  snowflakes: Snowflake[];
+  intervalId?: number;
+  particles: ParticlesArrType;
+  context: CanvasRenderingContext2D;
+  static instance: Scene | null;
 
-  constructor(public canvas_ref: HTMLCanvasElement) {
+  constructor(public canvas_ref: HTMLCanvasElement, public condition: string) {
     this.intervalId = 0;
-    this.raindrops = [];
-    this.snowflakes = [];
+    this.particles = [];
     this.limit = 100;
     this.context = this.canvas_ref.getContext("2d");
   }
 
-  init(condition: string) {
+  init(condition = this.condition) {
     this.context.restore();
     this.stopParticles();
-    this.clean();
+    console.log(condition)
     switch (condition) {
       case "rain":
-        this.spawn(Raindrop, this.raindrops);
+        this.spawn(Raindrop);
         break;
 
       case "snow":
-        this.spawn(Snowflake, this.snowflakes);
+        this.spawn(Snowflake);
         break;
 
       default:
@@ -37,22 +35,22 @@ export class Scene {
     }
   }
 
-  spawn(particle: ParticlesType, particleArr: ParticlesArrType) {
+  spawn(particle: ParticlesType) {
     const particleSpawn = setInterval(() => {
-      if (particleArr.length >= this.limit) {
+      if (this.particles.length >= this.limit) {
         clearInterval(particleSpawn);
       } else {
-        particleArr.push(new particle(this.context));
+        this.particles.push(new particle(this.context));
       }
     }, Math.random() * 80);
-    this.moveParticles(particleArr);
+    this.moveParticles();
   }
 
-  moveParticles(particleArr: ParticlesArrType) {
+  moveParticles() {
     this.intervalId = setInterval(() => {
       window.requestAnimationFrame(() => {
         this.clean();
-        particleArr?.map((elem) => {
+        this.particles?.map((elem) => {
           elem.move();
         });
       });
@@ -62,23 +60,21 @@ export class Scene {
   stopParticles() {
     clearInterval(this.intervalId);
     this.clean();
-    this.intervalId = 0;
+    this.intervalId = undefined;
+    this.particles=[];
   }
 
   clean() {
     this.context.restore();
-    this.context.clearRect(0,0,window.innerWidth, window.innerHeight)
+    this.context.clearRect(0, 0, window.innerWidth, window.innerHeight);
     this.canvas_ref.height = window.innerHeight;
     this.canvas_ref.width = window.innerWidth;
-    this.raindrops = [];
-    this.snowflakes = [];
   }
 
-  static getInstance(canvas_ref: HTMLCanvasElement) {
-    if (!this.instance) {
-      this.instance = new Scene(canvas_ref);
-      return this.instance;
+  static getInstance(canvas_ref: HTMLCanvasElement, condition: string) {
+    if (!Scene.instance) {
+      Scene.instance = new Scene(canvas_ref, condition);
     }
-    return this.instance;
+    return Scene.instance;
   }
 }

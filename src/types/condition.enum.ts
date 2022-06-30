@@ -1,6 +1,6 @@
-export enum condition {
-    RAINY = 'rain',
-    SUNNY = 'sun',
-    SNOWY = 'snow',
-    CLOUDY = 'cloud',
+export enum Condition {
+    RAIN = 'rain',
+    SUN = 'sun',
+    SNOW = 'snow',
+    CLOUD = 'cloud',
 }

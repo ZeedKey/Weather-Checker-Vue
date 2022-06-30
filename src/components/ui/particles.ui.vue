@@ -22,16 +22,16 @@ export default {
     };
   },
   watch: {
-    async geolocation(newGeo: WeatherResponseType) {
+    geolocation(newGeo: WeatherResponseType) {
       if (newGeo) {
-        const canvas = Scene.getInstance(
-          this.$refs.canvas as HTMLCanvasElement
-        );
-
         const conditionStyle =
           resolveCondition(newGeo.current.condition.text, "style") ?? "";
         const conditionValue =
           resolveCondition(newGeo.current.condition.text, "value") ?? "";
+        const canvas = Scene.getInstance(
+          this.$refs.canvas as HTMLCanvasElement,
+          conditionValue
+        );
 
         this.canvas_css = conditionStyle;
         canvas.init(conditionValue);
@@ -54,37 +54,37 @@ div {
   height: 100%;
   background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
   background-size: 400% 400%;
-  -webkit-animation: Gradient 50s ease infinite;
-  -moz-animation: Gradient 50s ease infinite;
-  animation: Gradient 50s ease infinite;
+  -webkit-animation: Gradient 15s ease infinite;
+  -moz-animation: Gradient 15s ease infinite;
+  animation: Gradient 15s ease infinite;
 }
 .canvas_sunny_theme {
-  background: linear-gradient(-45deg, #ffffff, #f7a1a1, #fffeed, #fff07a);
+  background: linear-gradient(-45deg, #f7a1a1, #ffbc57, #818181);
   background-size: 400% 400%;
-  -webkit-animation: Gradient 50s ease infinite;
-  -moz-animation: Gradient 50s ease infinite;
-  animation: Gradient 50s ease infinite;
+  -webkit-animation: Gradient 15s ease infinite;
+  -moz-animation: Gradient 15s ease infinite;
+  animation: Gradient 15s ease infinite;
 }
 .canvas_rainy_theme {
   background: linear-gradient(-45deg, #ff430a, #e4e4e4, #004d69, #000000);
   background-size: 400% 400%;
-  -webkit-animation: Gradient 50s ease infinite;
-  -moz-animation: Gradient 50s ease infinite;
-  animation: Gradient 50s ease infinite;
+  -webkit-animation: Gradient 15s ease infinite;
+  -moz-animation: Gradient 15s ease infinite;
+  animation: Gradient 15s ease infinite;
 }
 .canvas_cloudy_theme {
   background: linear-gradient(-45deg, #ff430a, #e4e4e4, #004d69, #000000);
   background-size: 400% 400%;
-  -webkit-animation: Gradient 50s ease infinite;
-  -moz-animation: Gradient 50s ease infinite;
-  animation: Gradient 50s ease infinite;
+  -webkit-animation: Gradient 15s ease infinite;
+  -moz-animation: Gradient 15s ease infinite;
+  animation: Gradient 15s ease infinite;
 }
 .canvas_snowy_theme {
   background: linear-gradient(-45deg, #ff430a, #e4e4e4, #004d69, #000000);
   background-size: 400% 400%;
-  -webkit-animation: Gradient 50s ease infinite;
-  -moz-animation: Gradient 50s ease infinite;
-  animation: Gradient 50s ease infinite;
+  -webkit-animation: Gradient 15s ease infinite;
+  -moz-animation: Gradient 15s ease infinite;
+  animation: Gradient 15s ease infinite;
 }
 @-webkit-keyframes Gradient {
   0% {

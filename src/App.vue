@@ -43,8 +43,10 @@ export default {
     return {
       user_city: "",
       city_weather: undefined,
-      viewed_city_list: [] as string[],
-      search_city_list: [],
+      viewed_city_list: JSON.parse(
+        window.localStorage.getItem("last-5-cities")
+      ),
+      search_city_list: [] as string[],
     };
   },
 
@@ -56,10 +58,14 @@ export default {
     async onCityClick(city: string) {
       this.city_weather = (await getCityWeather(city)).data;
       this.viewed_city_list.push(city);
+      window.localStorage.setItem(
+        "last-5-cities",
+        JSON.stringify(this.viewed_city_list)
+      );
     },
 
-    // eslint-disable-next-line no-undef
     async onGeoSuccess(pos: GeolocationPosition) {
+      console.log(window.localStorage.getItem("last-5-cities"));
       this.user_city = (
         await getLocation(pos)
       ).data.addresses[0].address.localName;
