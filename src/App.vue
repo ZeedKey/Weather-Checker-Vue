@@ -55,11 +55,8 @@ export default {
   main {
     display: flex;
     flex-direction: column;
-    margin: 0;
-    height: 100%;
   }
 }
-
 main {
   display: grid;
   grid-template-columns: auto 400px;

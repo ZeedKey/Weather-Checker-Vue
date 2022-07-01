@@ -57,10 +57,17 @@ section {
   display: flex;
   align-items: center;
   height: 100vh;
+  width: 100%;
   transform: translateX(calc(100% - 30px));
 }
 
 section:hover {
+  transform: translateX(0);
+}
+section:checked {
+  transform: translateX(0);
+}
+section:active {
   transform: translateX(0);
 }
 .section__inner {
