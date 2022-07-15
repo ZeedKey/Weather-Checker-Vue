@@ -4,6 +4,7 @@ import { getLocation } from "./api/location/location.query";
 import { useStore } from "./store";
 import { computed } from "vue";
 import "@/assets/base.css";
+import { storeToRefs } from "pinia";
 
 export default {
   setup() {
@@ -15,7 +16,6 @@ export default {
       error: computed(() => store?.request_error),
     };
   },
-
   created() {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
@@ -47,7 +47,7 @@ export default {
     <the-panel />
   </main>
   <loading-indicator v-if="!weather && !error" />
-  <error-alert v-if="error" />
+  <error-alert v-if="storeref" />
 </template>
 
 <style scoped>
